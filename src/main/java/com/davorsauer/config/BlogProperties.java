@@ -1,11 +1,13 @@
 package com.davorsauer.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
 
 /**
  * Created by davor on 13/04/15.
  */
-@ConfigurationProperties("blog")
+@Component
+@ConfigurationProperties(prefix = "blog")
 public class BlogProperties {
 
     private String name = "";

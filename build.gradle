@@ -33,17 +33,18 @@ dependencies {
     compile ( group: "org.springframework.boot", name: "spring-boot-starter-web", version: springBootVersion) {
         exclude module: "spring-boot-starter-tomcat" // Don't use Tomcat as default container
     }
-//    compile( group: "org.springframework.boot", name: "spring-boot-starter-thymeleaf", version: springBootVersion)
     compile( group: "org.springframework.boot", name: "spring-boot-autoconfigure", version: springBootVersion)
-//    compile( group: "org.springframework.boot", name: "spring-boot-starter-actuator", version: springBootVersion)
+    compile( group: "org.springframework.boot", name: "spring-boot-starter-actuator", version: springBootVersion)
     compile("org.thymeleaf:thymeleaf-spring4:2.1.2.RELEASE")
+    compile 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect:1.2.8'
 
+    // Send mail
+    compile 'javax.mail:javax.mail-api:1.5.2'
+    compile 'com.sun.mail:javax.mail:1.5.2'
 
     providedCompile 'javax.servlet:javax.servlet-api:' + javaxServletApiVersion
-
-    // Provided container
     providedRuntime("org.springframework.boot:spring-boot-starter-jetty")
-    
+
     testCompile 'junit:junit:' + junitVersion
 }
 
