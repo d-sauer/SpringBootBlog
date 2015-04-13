@@ -2,10 +2,11 @@ package com.davorsauer.controller;
 
 import com.davorsauer.commons.Logger;
 import com.davorsauer.commons.NotifyType;
+import com.davorsauer.dto.ContactReq;
+import com.davorsauer.dto.ContactRes;
 import com.davorsauer.service.SendMailService;
-import com.davorsauer.rest.ContactReq;
-import com.davorsauer.rest.ContactRes;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -18,12 +19,13 @@ import java.util.Enumeration;
 /**
  * Created by davor on 11/04/15.
  */
-
 @Controller
 public class WebController implements Logger {
 
     @Autowired
+    @Lazy
     private SendMailService sendMailService;
+
 
     @RequestMapping("/")
     public String index() {

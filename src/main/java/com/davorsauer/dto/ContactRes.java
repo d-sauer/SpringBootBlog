@@ -1,4 +1,4 @@
-package com.davorsauer.rest;
+package com.davorsauer.dto;
 
 import com.davorsauer.commons.NotifyType;
 

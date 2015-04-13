@@ -42,6 +42,12 @@ dependencies {
     compile 'javax.mail:javax.mail-api:1.5.2'
     compile 'com.sun.mail:javax.mail:1.5.2'
 
+    // Markdown support
+    compile 'org.pegdown:pegdown:1.5.0'
+
+    // Git support
+    compile 'org.kohsuke:github-api:1.66'
+
     providedCompile 'javax.servlet:javax.servlet-api:' + javaxServletApiVersion
     providedRuntime("org.springframework.boot:spring-boot-starter-jetty")
 

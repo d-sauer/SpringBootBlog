@@ -15,7 +15,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 @Service
-//@Lazy
+@Lazy
 public class SendMailService implements Logger {
 
     @Autowired

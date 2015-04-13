@@ -1,4 +1,4 @@
-package com.davorsauer.rest;
+package com.davorsauer.dto;
 
 public class ContactReq {
 
