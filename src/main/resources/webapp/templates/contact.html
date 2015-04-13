@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorator="base/wrapper">
+  <head>
+    <title>Davor Sauer : Contact</title>
+  </head>
+  <body>
+    <div layout:fragment="content">
+	    <section id="contact">
+	        <div class="row">
+	            <div class="column span_12">
+	                <div id="contact_box">
+	                    <h5>
+	                        <span>Contact...</span>
+	                    </h5>
+	
+	                    <div id="contactdiv">
+	                       <table>
+	                           <tr>
+	                               <td>Name:<br/>
+	                               <input type="text" id="name" name="name" class="name" /></td>
+	                           </tr>
+	                           <tr>
+	                               <td>E-mail Address: <span style="color: #D70000;">*</span><br/>
+	                               <input type="text" id="email" name="email" class="email" required="true" /></td>
+	                           </tr>
+	                           <tr>
+	                               <td>Subject: <span style="color: #D70000">*</span><br/>
+	                               <input type="text" id="subject" name="subject" required="true" class="subject" /></td>
+	                           </tr>
+	                           <tr>
+	                               <td>Message: <span style="color: #D70000">*</span><br/>
+	                               <textarea id="message" name="message" cols="42" rows="9" required="true" class="message"></textarea></td>
+	                           </tr>
+	                           <tr>
+	                               <td>
+	                                <input id="contact_btn" type="button" value="Send Message" style="font-weight: bold" />
+	                                <div style="float: right">
+	                                    <div th:replace="base/_utils :: ajax_loader (message ='Sending...')"></div>
+	                                </div>
+	                                </td>
+	                           </tr>
+	                       </table>
+	                       
+	                       
+	                       <div id="notify_wrapper" class="hide row">
+					            <div class="column span_6">
+					                <a href="#" id="notify" class="notify"></a>
+					            </div>
+					        </div>
+	                       
+	                    </div>
+					</div>
+	            </div>
+	
+	        </div>
+	
+		    <script th:replace="base/_scripts :: jquery" />
+		    <script language="javascript" th:src="@{/resources/scripts/contact.js}"></script>
+	    </section>
+    
+    
+    </div>
+
+  </body>
+</html>

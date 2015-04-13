@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<!--[if lt IE 7 ]> <html lang="en" class="ie ie6"> <![endif]-->
+<!--[if IE 7 ]>    <html lang="en" class="ie ie7"> <![endif]-->
+<!--[if IE 8 ]>    <html lang="en" class="ie ie8"> <![endif]-->
+<!--[if IE 9 ]>    <html lang="en" class="ie ie9"> <![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!-->
+<html dir="ltr" lang="en-US" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<!--<![endif]-->
+<head th:replace="base/_head :: head">
+</head>
+<body>
+    <script th:replace="base/_scripts :: prettify" />
+
+	<div class="container">
+		<div th:replace="base/_header::header"></div>
+
+		<div th:replace="base/_header :: tagline"></div>
+
+		<section id="content" layout:fragment="content">
+		  
+		</section>
+
+	</div>
+
+	<div th:replace="base/_footer :: copyright"></div>
+
+    <script>
+       prettyPrint();
+    </script>
+	
+
+</body>
+</html>

@@ -1,0 +1,30 @@
+/* -- Login -- */
+div.login {
+	border: 1px solid #4BD294;
+	padding: 0px;
+	margin: 10px auto;
+	width: 300px;
+	height: 200px;
+}
+
+div.login .title {
+	display: block;
+	width: 100%;
+	background-color: #4BD294;
+	text-align: center;
+	font-size: 15px;
+	font-weight: bold;
+	margin-bottom: 5px;
+}
+
+div.login .loginname, div.login .password {
+	width: 250px;
+}
+
+div.login .content {
+	margin: 5px;
+}
+
+button.login {
+	float: right;
+}

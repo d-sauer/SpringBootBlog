@@ -1,0 +1,95 @@
+apply plugin: 'java'
+apply plugin: "war"
+apply plugin: 'eclipse-wtp'
+apply plugin: 'idea'
+
+version = '0.0.1'
+sourceCompatibility = 1.8
+
+ext {
+    springBootVersion = "1.2.3.RELEASE"
+    junitVersion = "4.11"
+    javaxServletApiVersion = "3.1.0"
+
+    sharedManifest = manifest {
+        attributes('provider' : 'gradle',
+                   'Implementation-Title': project.name, 
+                   'Implementation-Version': project.version,
+                   'Build-By': System.getProperty('user.name'),
+                   'Build-JDK': System.getProperty('java.version'),
+                   'Build-Time': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+                   'Source-Compatibility': project.sourceCompatibility,
+                   'Target-Compatibility': project.targetCompatibility)
+    }
+}
+
+repositories {
+   mavenCentral()
+}
+
+
+dependencies {
+    // Spring-Boot
+    compile ( group: "org.springframework.boot", name: "spring-boot-starter-web", version: springBootVersion) {
+        exclude module: "spring-boot-starter-tomcat" // Don't use Tomcat as default container
+    }
+//    compile( group: "org.springframework.boot", name: "spring-boot-starter-thymeleaf", version: springBootVersion)
+    compile( group: "org.springframework.boot", name: "spring-boot-autoconfigure", version: springBootVersion)
+//    compile( group: "org.springframework.boot", name: "spring-boot-starter-actuator", version: springBootVersion)
+    compile("org.thymeleaf:thymeleaf-spring4:2.1.2.RELEASE")
+
+
+    providedCompile 'javax.servlet:javax.servlet-api:' + javaxServletApiVersion
+
+    // Provided container
+    providedRuntime("org.springframework.boot:spring-boot-starter-jetty")
+    
+    testCompile 'junit:junit:' + junitVersion
+}
+
+
+jar {
+    manifest = project.manifest {
+        from sharedManifest
+    }
+}
+
+
+war {
+    manifest = project.manifest {
+        from sharedManifest
+    }
+}
+
+//
+// Setup IDE
+//
+eclipse {
+    classpath {
+       downloadSources=true
+       downloadJavadoc=true
+    }
+}
+
+idea {
+    module {
+        downloadJavadoc = true
+        downloadSources = true
+    }
+}
+
+
+//
+// Enable SpringBoot plugin
+//
+
+apply plugin: 'spring-boot'
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath(group: 'org.springframework.boot', name: 'spring-boot-gradle-plugin', version: "1.2.3.RELEASE")
+    }
+}
