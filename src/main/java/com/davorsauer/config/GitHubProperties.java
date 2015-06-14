@@ -18,9 +18,7 @@ public class GitHubProperties {
 
     private String repository;
 
-    private String path;
-
-    private String fileFormat;
+    private String path = "";
 
 
     public String getUser() {
@@ -63,11 +61,4 @@ public class GitHubProperties {
         this.path = path;
     }
 
-    public String getFileFormat() {
-        return fileFormat;
-    }
-
-    public void setFileFormat(String fileFormat) {
-        this.fileFormat = fileFormat;
-    }
 }

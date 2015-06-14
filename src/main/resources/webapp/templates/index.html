@@ -4,30 +4,24 @@
 		<div class="row">
 			<div class="column span_9">
 
-				<div class="blog_box">
+				<div th:each="article : ${articles}" th:if="${article.getMetadata().isPublished()}" class="blog_box">
 				    <div class="blog_title">
-						<a href="blog/spring_disable_browser_cache_control_during_development" class="h4">Spring disable browser cache control during development</a>
+						<a th:href="${article.getUrl()}" class="h4" th:text="${article.getMetadata().getTitle()}">Article title</a>
 						<br/>
-						<span class="posted"><img th:src="@{/resources/images/clock_16.png}"/>2014.03.25</span>
-<!-- 						<span class="tags">Tags: -->
-<!--                            <span class="tag">Java</span> -->
-<!--                            <span class="tag">Spring 4</span> -->
-<!--                            <span class="tag">HTTP Cache</span> -->
-<!--                         </span> -->
+						<span class="posted" th:text="${article.getMetadata().getFormatPublishDate()}"><img th:src="@{/resources/images/clock_16.png}"/>YYYY-MM-DD</span>
+ 						<span class="tags" th:each="tag : ${article.getMetadata().getTags()}">
+                            <span class="tag" th:text="${tag}">TAG</span>
+                         </span>
 				    </div>
 
                     <hr />
 
                     <div class="content">
-                        <p>
-                            During development of web page/application there is one annoying web browser feature, cache. 
-                            Cache is useful thing in production, but in development when some resource is frequently changed 
-                            like javascript, css, templates or some other resource. When we hit refresh some stuff are refreshed, 
-                            and some of them is not, depending on browser internal caching mechanism. Annoying thing is repeatedly 
-                            clearing cache when we made some changes on resources and sometimes browser load new resources and sometime don’t. 
+                        <p th:utext="${article.getMetadata().getDescription()}">
+
                         </p>
                         
-                        <a href="blog/spring_disable_browser_cache_control_during_development">Read more…</a>
+                        <a th:href="${article.getUrl()}">Read more…</a>
                     </div>
 				</div>
 				

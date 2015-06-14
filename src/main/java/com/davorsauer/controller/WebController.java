@@ -4,17 +4,19 @@ import com.davorsauer.commons.Logger;
 import com.davorsauer.commons.NotifyType;
 import com.davorsauer.dto.ContactReq;
 import com.davorsauer.dto.ContactRes;
+import com.davorsauer.service.BlogService;
 import com.davorsauer.service.SendMailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.Enumeration;
+import java.util.*;
 
 /**
  * Created by davor on 11/04/15.
@@ -22,14 +24,20 @@ import java.util.Enumeration;
 @Controller
 public class WebController implements Logger {
 
-    @Autowired
     @Lazy
+    @Autowired
     private SendMailService sendMailService;
+
+    @Autowired
+    private BlogService blogService;
 
 
     @RequestMapping("/")
-    public String index() {
-        trace("page: index");
+    public String index(Model model) {
+
+        model.addAttribute("articles", blogService.getContents());
+        model.addAttribute("test", "test content " + new Date());
+
         return "index";
     }
 
