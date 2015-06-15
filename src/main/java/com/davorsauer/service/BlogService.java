@@ -20,10 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.time.LocalDate;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Function;
 
@@ -35,9 +32,13 @@ public class BlogService implements Logger {
 
     private static final String ARTICLES_URL = "blog";
 
+    private GitHubRepositoryService repository;
+
+    private BlogProperties blogProperties;
+
     private final Integer currentYear = LocalDate.now().getYear();
 
-    private Map<String, ContentLocation> contents = new TreeMap<>();
+    private Map<String, ContentLocation> contents = new HashMap<>();
 
     private Invocable invocable;
 
@@ -47,9 +48,27 @@ public class BlogService implements Logger {
 
     private final Function<String, String[]> metaNamings = (customName) -> new String[]{"metadata", "metadata.yaml", "metadata.yml", "index.yaml", "index.yml", customName + ".yaml", customName + ".yml"};
 
-    private GitHubRepositoryService repository;
+    private final Function<ContentLocation, Long> getPublishDate = (contentLocation -> {
+        if (contentLocation.getMetadata() != null && contentLocation.getMetadata().getPublishDate() != null) {
+            return contentLocation.getMetadata().getPublishDate().getTime();
+        } else {
+            return 0L;
+        }
+    }
+    );
 
-    private BlogProperties blogProperties;
+    private final Comparator<Map.Entry<String, ContentLocation>> sortByValue = (entry1, entry2) -> {
+        long publishDate1 = getPublishDate.apply(entry1.getValue());
+        long publishDate2 = getPublishDate.apply(entry2.getValue());
+
+        if (publishDate1 > publishDate2)
+            return -1;
+        else if (publishDate1 < publishDate2)
+            return 1;
+        return 0;
+    };
+
+
 
 
     @Autowired
@@ -81,7 +100,7 @@ public class BlogService implements Logger {
 
         lock.lock();
         try {
-            final Map<String, ContentLocation> articles = new TreeMap<>();
+            final Map<String, ContentLocation> articles = new HashMap<>();
 
             List<GHContent> contents = repository.getRepository().getDirectoryContent("/");
             for (GHContent content : contents) {
@@ -98,14 +117,18 @@ public class BlogService implements Logger {
                 }
             }
 
-            this.contents = articles;
+            Map<String, ContentLocation> sortedArticles = new LinkedHashMap<>();
+            articles.entrySet().stream().sorted(sortByValue).forEach(ea -> {
+                sortedArticles.put(ea.getKey(), ea.getValue());
+            });
+            this.contents = sortedArticles;
         } finally {
             lock.unlock();
         }
     }
 
     private Map<String, ContentLocation> scanYear(String path, Integer year) throws IOException {
-        final Map<String, ContentLocation> articles = new TreeMap<>();
+        final Map<String, ContentLocation> articles = new HashMap<>();
 
         List<GHContent> contents = repository.getRepository().getDirectoryContent("/" + path);
         for (GHContent content : contents) {
