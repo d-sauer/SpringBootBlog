@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="base/wrapper">
+<head>
+    <title>Error</title>
+</head>
+<body>
+<div layout:fragment="content">
+
+    <br/>
+    <h3 th:text="${message}">Error message</h3>
+
+    <a href="/">Return</a>
+
+    <script>
+        setInterval(function () { window.location.href="/" }, 3000);
+    </script>
+
+</div>
+</body>
+</html>

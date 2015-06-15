@@ -5,9 +5,11 @@
                 <a th:href="@{/}" title="Blogspot"><img th:src="@{/resources/images/logo2.png}" alt="" title="" /></a>
 		    </div>
 		    <div class="main_logo_label">
-		      Techspot blog...
+				<a th:href="@{/}" th:text="${@blogProperties.getTitle()}">
+					Techspot blog...
+				</a>
 		    </div>
-			
+
 			<nav role="navigation">
 				<ul class="menu">
 					<li th:class="${#strings.length(#ctx.httpServletRequest.getRequestURI()) - 1} == ${#strings.length(#ctx.httpServletRequest.contextPath)} ? 'current' : ''"><a th:href="@{/}">Blog</a></li>
