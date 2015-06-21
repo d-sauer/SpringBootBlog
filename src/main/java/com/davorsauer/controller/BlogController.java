@@ -1,6 +1,8 @@
 package com.davorsauer.controller;
 
 import com.davorsauer.commons.Logger;
+import com.davorsauer.config.BlogProperties;
+import com.davorsauer.domain.ContentData;
 import com.davorsauer.error.LoadArticleException;
 import com.davorsauer.error.ScanArticlesException;
 import com.davorsauer.service.BlogService;
@@ -24,6 +26,9 @@ public class BlogController implements Logger {
     @Autowired
     private BlogService blogService;
 
+    @Autowired
+    private BlogProperties blogProperties;
+
     @RequestMapping(value = "/blog", method = {RequestMethod.GET})
     public String redirect() {
         return "redirect:/";
@@ -31,16 +36,29 @@ public class BlogController implements Logger {
 
     @RequestMapping(value = "/blog/{slug}", method = {RequestMethod.GET})
     public String blog(@PathVariable("slug") String slug, Model model) throws LoadArticleException {
-        String content = blogService.getArticle(slug);
-        model.addAttribute("blog_content", content);
+        ContentData content = blogService.getArticle(slug);
+        model.addAttribute("blog_content", content.getContent());
+        if (content.getMetadata() != null ) {
+            if (content.getMetadata().getTags() != null)
+                model.addAttribute("blog_tags", content.getMetadata().getTags());
+            if (content.getMetadata().getPublishDate() != null)
+                model.addAttribute("blog_publish_date", content.getMetadata().getFormatPublishDate());
+        }
 
         return DEFAULT_BLOG_TEMPLATE;
     }
 
     @RequestMapping(value = "/preview/{branch}/{slug}", method = {RequestMethod.GET})
     public String preview(@PathVariable("branch") String branch, @PathVariable("slug") String slug, Model model) throws IOException, LoadArticleException {
-        String content = blogService.getArticle(slug, branch);
-        model.addAttribute("blog_content", content);
+        ContentData content = blogService.getArticle(slug, branch);
+        model.addAttribute("blog_content", content.getContent());
+        if (content.getMetadata() != null ) {
+            if (content.getMetadata().getTags() != null)
+                model.addAttribute("blog_tags", content.getMetadata().getTags());
+            if (content.getMetadata().getPublishDate() != null)
+                model.addAttribute("blog_publish_date", content.getMetadata().getFormatPublishDate());
+        }
+
         return DEFAULT_BLOG_TEMPLATE;
     }
 

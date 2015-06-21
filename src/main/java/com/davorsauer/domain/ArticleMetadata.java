@@ -5,13 +5,14 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
  * Created by davor on 05/05/15.
  */
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_EMPTY)
-public class ContentMetadata {
+public class ArticleMetadata {
 
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date publishDate;
@@ -31,11 +32,11 @@ public class ContentMetadata {
     }
 
     public String getFormatPublishDate() {
-        return ContentMetadataUtils.getFormatPublishDate(this, null);
+        return ContentMetadataUtils.getFormatDate(getPublishDate(), null);
     }
 
     public String getFormatPublishDate(String format) {
-        return ContentMetadataUtils.getFormatPublishDate(this, format);
+        return ContentMetadataUtils.getFormatDate(getPublishDate(), format);
     }
 
     public void setPublishDate(Date publishDate) {
@@ -64,7 +65,7 @@ public class ContentMetadata {
     }
 
     public void setTitle(String title) {
-        this.title = title;
+        this.title = title.trim();
     }
 
     public String getDescription() {
@@ -72,7 +73,7 @@ public class ContentMetadata {
     }
 
     public void setDescription(String description) {
-        this.description = description;
+        this.description = description.trim();
     }
 
     public String getTemplate() {
@@ -80,6 +81,6 @@ public class ContentMetadata {
     }
 
     public void setTemplate(String template) {
-        this.template = template;
+        this.template = template.trim();
     }
 }

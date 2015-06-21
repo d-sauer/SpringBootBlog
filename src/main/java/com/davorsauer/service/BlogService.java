@@ -4,8 +4,9 @@ import com.davorsauer.commons.ContentMetadataUtils;
 import com.davorsauer.commons.Logger;
 import com.davorsauer.config.BlogProperties;
 import com.davorsauer.domain.ArticleType;
-import com.davorsauer.domain.ContentLocation;
-import com.davorsauer.domain.ContentMetadata;
+import com.davorsauer.domain.ContentData;
+import com.davorsauer.domain.Article;
+import com.davorsauer.domain.ArticleMetadata;
 import com.davorsauer.error.LoadArticleException;
 import com.davorsauer.error.ScanArticlesException;
 import org.kohsuke.github.GHContent;
@@ -38,7 +39,7 @@ public class BlogService implements Logger {
 
     private final Integer currentYear = LocalDate.now().getYear();
 
-    private Map<String, ContentLocation> contents = new HashMap<>();
+    private Map<String, Article> contents = new HashMap<>();
 
     private Invocable invocable;
 
@@ -46,9 +47,9 @@ public class BlogService implements Logger {
 
     private final Function<String, String[]> indexNamings = (customName) -> new String[]{"index.html", "index.htm", "index.md", customName + ".html", customName + ".htm", customName + ".md"};
 
-    private final Function<String, String[]> metaNamings = (customName) -> new String[]{"metadata", "metadata.yaml", "metadata.yml", "index.yaml", "index.yml", customName + ".yaml", customName + ".yml"};
+    private final Function<String, String[]> metaNamings = (customName) -> new String[]{"metadata", customName + ".meta", customName};
 
-    private final Function<ContentLocation, Long> getPublishDate = (contentLocation -> {
+    private final Function<Article, Long> getPublishDate = (contentLocation -> {
         if (contentLocation.getMetadata() != null && contentLocation.getMetadata().getPublishDate() != null) {
             return contentLocation.getMetadata().getPublishDate().getTime();
         } else {
@@ -57,7 +58,7 @@ public class BlogService implements Logger {
     }
     );
 
-    private final Comparator<Map.Entry<String, ContentLocation>> sortByValue = (entry1, entry2) -> {
+    private final Comparator<Map.Entry<String, Article>> sortByValue = (entry1, entry2) -> {
         long publishDate1 = getPublishDate.apply(entry1.getValue());
         long publishDate2 = getPublishDate.apply(entry2.getValue());
 
@@ -89,7 +90,7 @@ public class BlogService implements Logger {
         }
     }
 
-    public Collection<ContentLocation> getContents() {
+    public Collection<Article> getContents() {
         return contents.values();
     }
 
@@ -100,7 +101,7 @@ public class BlogService implements Logger {
 
         lock.lock();
         try {
-            final Map<String, ContentLocation> articles = new HashMap<>();
+            final Map<String, Article> articles = new HashMap<>();
 
             List<GHContent> contents = repository.getRepository().getDirectoryContent("/");
             for (GHContent content : contents) {
@@ -109,7 +110,7 @@ public class BlogService implements Logger {
                         String path = content.getPath();
                         Integer year = Integer.parseInt(content.getName());
 
-                        Map<String, ContentLocation> yearArticles = scanYear(path, year);
+                        Map<String, Article> yearArticles = scanYear(path, year);
                         articles.putAll(yearArticles);
                     } catch (NumberFormatException e) {
                         // ignore, move forward
@@ -117,7 +118,7 @@ public class BlogService implements Logger {
                 }
             }
 
-            Map<String, ContentLocation> sortedArticles = new LinkedHashMap<>();
+            Map<String, Article> sortedArticles = new LinkedHashMap<>();
             articles.entrySet().stream().sorted(sortByValue).forEach(ea -> {
                 sortedArticles.put(ea.getKey(), ea.getValue());
             });
@@ -127,8 +128,8 @@ public class BlogService implements Logger {
         }
     }
 
-    private Map<String, ContentLocation> scanYear(String path, Integer year) throws IOException {
-        final Map<String, ContentLocation> articles = new HashMap<>();
+    private Map<String, Article> scanYear(String path, Integer year) throws IOException {
+        final Map<String, Article> articles = new HashMap<>();
 
         List<GHContent> contents = repository.getRepository().getDirectoryContent("/" + path);
         for (GHContent content : contents) {
@@ -141,7 +142,7 @@ public class BlogService implements Logger {
                     String articlePath = articleIndex.getPath();
                     String slug = year + "_" + content.getName();
 
-                    ContentLocation article = new ContentLocation();
+                    Article article = new Article();
                     article.setPath(articlePath);
                     article.setSlug(slug);
                     article.setUrl(ARTICLES_URL + "/" + slug);
@@ -152,7 +153,7 @@ public class BlogService implements Logger {
                     }
 
                     if (articleMetadata != null) {
-                        ContentMetadata articleMeta = ContentMetadataUtils.readMetadata(articleMetadata.read());
+                        ArticleMetadata articleMeta = ContentMetadataUtils.readMetadata(articleMetadata.read());
                         article.setMetadata(articleMeta);
                         if (articleMeta.isPublished() == null && articleMeta.getPublishDate() != null && articleMeta.getPublishDate().getTime() <= System.currentTimeMillis()) {
                             articleMeta.setPublished(true);
@@ -193,7 +194,7 @@ public class BlogService implements Logger {
         return content;
     }
 
-    public String getArticle(String slug, String ref) throws LoadArticleException {
+    public ContentData getArticle(String slug, String ref) throws LoadArticleException {
         String slugParts[] = slug.split("_", 2);
         if (slugParts.length != 2) {
             throw new LoadArticleException("Incorrect article slug");
@@ -216,16 +217,16 @@ public class BlogService implements Logger {
             throw new LoadArticleException("Can't find article with defined slug");
         }
 
-        return content;
+        return new ContentData(content, new ArticleMetadata());
     }
 
-    public String getArticle(String slug) throws LoadArticleException {
-        ContentLocation article = contents.get(slug);
+    public ContentData getArticle(String slug) throws LoadArticleException {
+        Article article = contents.get(slug);
         if (article != null) {
             if (article.getType() == ArticleType.MARKDOWN)
-                return getMarkdownArticle(article.getPath());
+                return new ContentData(getMarkdownArticle(article.getPath()), article.getMetadata());
             else
-                return repository.getArticleContent(article.getPath());
+                return new ContentData(repository.getArticleContent(article.getPath()), article.getMetadata());
         } else {
             error("Required article ({}) doesn't exist!", slug);
             throw new LoadArticleException("Required article doesn't exist!");

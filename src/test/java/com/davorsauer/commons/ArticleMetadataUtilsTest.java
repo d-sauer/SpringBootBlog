@@ -1,6 +1,6 @@
 package com.davorsauer.commons;
 
-import com.davorsauer.domain.ContentMetadata;
+import com.davorsauer.domain.ArticleMetadata;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,9 +17,9 @@ import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
 
 @RunWith(BlockJUnit4ClassRunner.class)
-public class ContentMetadataUtilsTest implements Logger {
+public class ArticleMetadataUtilsTest implements Logger {
 
-    private ContentMetadata metadata = new ContentMetadata();
+    private ArticleMetadata metadata = new ArticleMetadata();
 
     @Before
     public void setup() {
@@ -56,17 +56,17 @@ public class ContentMetadataUtilsTest implements Logger {
                 "Title:Custom title\n" +
                 "PublishDate:2015-05-21";
 
-        ContentMetadata contentMetadata = ContentMetadataUtils.readMetadata(metadata);
+        ArticleMetadata articleMetadata = ContentMetadataUtils.readMetadata(metadata);
 
-        assertThat(contentMetadata.getDescription(), containsString("Custom description"));
-        assertThat(contentMetadata.getDescription(), containsString("but little bit longer"));
-        assertThat(contentMetadata.getTags(), hasItems("tag1", "tag2"));
-        assertThat(contentMetadata.getTitle(), is("Custom title"));
+        assertThat(articleMetadata.getDescription(), containsString("Custom description"));
+        assertThat(articleMetadata.getDescription(), containsString("but little bit longer"));
+        assertThat(articleMetadata.getTags(), hasItems("tag1", "tag2"));
+        assertThat(articleMetadata.getTitle(), is("Custom title"));
 
         Date date = new Date();
         date.setTime(1432159200000L);
 
-        assertThat(contentMetadata.getPublishDate(), is(date));
+        assertThat(articleMetadata.getPublishDate(), is(date));
     }
 
     @Test
@@ -82,17 +82,17 @@ public class ContentMetadataUtilsTest implements Logger {
 
         // read files as stream:
         InputStream is = new FileInputStream(new File(metadataFilePath.toString()));
-        ContentMetadata contentMetadata = ContentMetadataUtils.readMetadata(is);
+        ArticleMetadata articleMetadata = ContentMetadataUtils.readMetadata(is);
 
-        assertThat(contentMetadata.getDescription(), containsString("Custom description"));
-        assertThat(contentMetadata.getDescription(), containsString("but with additional line"));
-        assertThat(contentMetadata.getTags(), hasItems("tag1", "tag2"));
-        assertThat(contentMetadata.getTitle(), is("Custom title"));
+        assertThat(articleMetadata.getDescription(), containsString("Custom description"));
+        assertThat(articleMetadata.getDescription(), containsString("but with additional line"));
+        assertThat(articleMetadata.getTags(), hasItems("tag1", "tag2"));
+        assertThat(articleMetadata.getTitle(), is("Custom title"));
 
         Date date = new Date();
         date.setTime(1432159200000L);
 
-        assertThat(contentMetadata.getPublishDate(), is(date));
+        assertThat(articleMetadata.getPublishDate(), is(date));
     }
 
 }

@@ -449,6 +449,10 @@ div.main_logo {
 	margin-top: 8px;
 }
 
+div.main_logo img {
+	padding-top: 10px;
+}
+
 div.main_logo_label {
 	float:left;
 	margin-top: 20px;
@@ -2011,7 +2015,7 @@ section#typography {
 code, pre {
 	padding: 0 3px 2px;
 	font-family: Menlo, Monaco, "Courier New", monospace;
-	font-size: 12px;
+	font-size: 10px;
 	color: #333333;
 	-webkit-border-radius: 3px;
 	-moz-border-radius: 3px;

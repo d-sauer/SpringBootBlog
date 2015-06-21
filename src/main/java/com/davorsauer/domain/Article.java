@@ -3,7 +3,7 @@ package com.davorsauer.domain;
 /**
  * Created by davor on 05/05/15.
  */
-public class ContentLocation implements Comparable<ContentLocation> {
+public class Article implements Comparable<Article> {
 
     private String path;
 
@@ -13,7 +13,7 @@ public class ContentLocation implements Comparable<ContentLocation> {
 
     private boolean isArchive;
 
-    private ContentMetadata metadata;
+    private ArticleMetadata metadata;
 
     private ArticleType type = ArticleType.HTML;
 
@@ -49,11 +49,11 @@ public class ContentLocation implements Comparable<ContentLocation> {
         this.isArchive = isArchive;
     }
 
-    public ContentMetadata getMetadata() {
+    public ArticleMetadata getMetadata() {
         return metadata;
     }
 
-    public void setMetadata(ContentMetadata metadata) {
+    public void setMetadata(ArticleMetadata metadata) {
         this.metadata = metadata;
     }
 
@@ -66,12 +66,12 @@ public class ContentLocation implements Comparable<ContentLocation> {
     }
 
     @Override
-    public int compareTo(ContentLocation content) {
+    public int compareTo(Article content) {
         if (this == content)
             return 0;
 
-        ContentMetadata thisMetadata = getMetadata();
-        ContentMetadata compareMetadata = content.getMetadata();
+        ArticleMetadata thisMetadata = getMetadata();
+        ArticleMetadata compareMetadata = content.getMetadata();
 
         if (thisMetadata != null && compareMetadata != null) {
             Long thisPublishDate = thisMetadata.getPublishDate() != null ? thisMetadata.getPublishDate().getTime() : 0;
@@ -97,8 +97,8 @@ public class ContentLocation implements Comparable<ContentLocation> {
     public boolean equals(Object obj) {
         if (obj == null)
             return false;
-        if (obj instanceof ContentLocation) {
-            return this.getUrl().equals(((ContentLocation) obj).getUrl());
+        if (obj instanceof Article) {
+            return this.getUrl().equals(((Article) obj).getUrl());
         }
 
         return false;

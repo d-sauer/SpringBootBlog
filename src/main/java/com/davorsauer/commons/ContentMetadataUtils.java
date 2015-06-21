@@ -1,8 +1,6 @@
 package com.davorsauer.commons;
 
-import com.davorsauer.domain.ContentMetadata;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.davorsauer.domain.ArticleMetadata;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,18 +16,17 @@ import java.util.regex.Pattern;
 /**
  * Created by davor on 06/05/15.
  *
- * @see com.davorsauer.domain.ContentMetadata
+ * @see ArticleMetadata
  */
 public class ContentMetadataUtils {
 
-    private static final ObjectMapper mapper = new ObjectMapper();
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     private static final String PROPERTY_NAME_REGEX = "^\\s*(\\S+):";
     private static final Pattern PROPERTY_NAME_PATTERN = Pattern.compile(PROPERTY_NAME_REGEX);
 
     private static final Logger LOG = LoggerFactory.getLogger(ContentMetadataUtils.class);
 
-    public static ContentMetadata readMetadata(InputStream metadata) throws IOException {
+    public static ArticleMetadata readMetadata(InputStream metadata) throws IOException {
         StringBuilder buffer = new StringBuilder();
         byte [] readBuffer = new byte[1024];
         try {
@@ -43,8 +40,8 @@ public class ContentMetadataUtils {
         return readMetadata(buffer.toString());
     }
 
-    public static ContentMetadata readMetadata(String metadata) {
-        ContentMetadata contentMetadata = new ContentMetadata();
+    public static ArticleMetadata readMetadata(String metadata) {
+        ArticleMetadata articleMetadata = new ArticleMetadata();
 
         //
         // Map properties and values
@@ -73,7 +70,7 @@ public class ContentMetadataUtils {
         //
         // Put mapped properties to CustomMetadata object
         //
-        Class<ContentMetadata> clazz = ContentMetadata.class;
+        Class<ArticleMetadata> clazz = ArticleMetadata.class;
         Method methods[] = clazz.getDeclaredMethods();
         for (Method method : methods) {
             if (method.getName().startsWith("set") && method.getReturnType() != null && method.getParameterCount() == 1) {
@@ -85,15 +82,15 @@ public class ContentMetadataUtils {
                     try {
                         if (Date.class.isAssignableFrom(methodParam)) {
                             Date date = dateFormat.parse(value);
-                            method.invoke(contentMetadata, date);
+                            method.invoke(articleMetadata, date);
                         } else if (Set.class.isAssignableFrom(methodParam)) {
                             Set<String> set = new HashSet<>();
                             Arrays.asList(value.split(",")).forEach(element -> set.add(element.trim()));
-                            method.invoke(contentMetadata, set);
+                            method.invoke(articleMetadata, set);
                         } else if (Boolean.class.isAssignableFrom(methodParam)) {
-                            method.invoke(contentMetadata, Boolean.parseBoolean(value));
+                            method.invoke(articleMetadata, Boolean.parseBoolean(value));
                         } else if (String.class.isAssignableFrom(methodParam)) {
-                            method.invoke(contentMetadata, value);
+                            method.invoke(articleMetadata, value);
                         }
                     } catch (Exception e) {
                         LOG.error("Can't parse property:" + propertyName + " value:" + value + " to object of:" + methodParam.getName() + ", for method: " + method.getName(), e);
@@ -103,20 +100,20 @@ public class ContentMetadataUtils {
         }
 
 
-        return contentMetadata;
+        return articleMetadata;
     }
 
 
-    public static String writeMetadata(ContentMetadata contentMetadata) {
+    public static String writeMetadata(ArticleMetadata articleMetadata) {
         StringBuilder buffer = new StringBuilder();
 
         // Read all getMethods
-        Class<ContentMetadata> clazz = ContentMetadata.class;
+        Class<ArticleMetadata> clazz = ArticleMetadata.class;
         Method methods[] = clazz.getDeclaredMethods();
         for (Method method : methods) {
             if (method.getName().startsWith("get") && method.getReturnType() != null && method.getParameterCount() == 0) {
                 try {
-                    Object methodResult = method.invoke(contentMetadata, null);
+                    Object methodResult = method.invoke(articleMetadata, null);
                     if (methodResult != null) {
                         buffer.append(method.getName().substring(3));
                         buffer.append(":");
@@ -142,12 +139,12 @@ public class ContentMetadataUtils {
         return buffer.toString();
     }
 
-    public static String getFormatPublishDate(ContentMetadata contentMetadata, String format) {
+    public static String getFormatDate(Date formatDate, String format) {
         if (format == null) {
-            return dateFormat.format(contentMetadata.getPublishDate());
+            return dateFormat.format(formatDate);
         } else {
             SimpleDateFormat dateFormat = new SimpleDateFormat(format);
-            return dateFormat.format(contentMetadata.getPublishDate());
+            return dateFormat.format(formatDate);
         }
     }
 

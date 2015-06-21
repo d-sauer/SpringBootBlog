@@ -54,6 +54,7 @@ public class GitHubRepositoryService {
                 inputStream = content.read();
                 while (inputStream.read(readBuffer) != -1) {
                     buffer.append(new String(readBuffer, "UTF-8"));
+                    readBuffer = new byte[1024];
                 }
 
                 return buffer.toString();

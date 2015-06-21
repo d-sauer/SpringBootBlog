@@ -3,11 +3,15 @@
 	<section id="blogs">
 		<div class="row">
 			<div class="column span_12">
+				<span class="posted" th:text="${blog_publish_date}"><img th:src="@{/resources/images/clock_16.png}"/>YYYY-MM-DD</span>
+				<span class="tags" th:each="tag : ${blog_tags}">
+					<span class="tag" th:text="${tag}">TAG</span>
+				 </span>
 
 				<div class="blog_box" th:utext="${blog_content}">
 
 				</div>
-				
+
 			</div>
 
 		</div>
