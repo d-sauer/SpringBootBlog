@@ -35,7 +35,7 @@ public class WebController implements Logger {
     @RequestMapping("/")
     public String index(Model model) {
 
-        model.addAttribute("articles", blogService.getContents());
+        model.addAttribute("articles", blogService.getArticles());
         model.addAttribute("test", "test content " + new Date());
 
         return "index";
