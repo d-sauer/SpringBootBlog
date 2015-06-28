@@ -11,7 +11,7 @@ import java.util.Objects;
  */
 @Component
 @ConfigurationProperties(prefix = "blog.disqus")
-public class DisquisProperties implements InitializingBean {
+public class DisqusProperties implements InitializingBean {
 
     private String shortname;
 

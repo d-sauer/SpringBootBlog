@@ -1,20 +1,48 @@
 <div layout:decorator="base/wrapper_blog" layout:fragment="content">
 
-	<section id="blogs">
-		<div class="row">
-			<div class="column span_12">
-				<span class="posted" th:text="${blog_publish_date}"><img th:src="@{/resources/images/clock_16.png}"/>YYYY-MM-DD</span>
-				<span class="tags" th:each="tag : ${blog_tags}">
-					<span class="tag" th:text="${tag}">TAG</span>
-				 </span>
+    <section id="blogs">
+        <div class="row">
+            <div class="column span_12">
+                <section id="blog">
+                    <div class="blog_box" th:utext="${blog_content}">
 
-				<div class="blog_box" th:utext="${blog_content}">
+                    </div>
+                </section>
 
-				</div>
+                <section id="tags">
+                    <div>
+                        <hr/>
+                        <img class="posted" th:src="@{/resources/images/clock_16.png}"/><span class="posted" th:text="${blog_publish_date}">YYYY-MM-DD</span>
+                        Tags:
+                        <span class="tags" th:each="tag : ${blog_tags}">
+                            <span class="tag" th:text="${tag}">TAG</span>
+                        </span>
+                        <hr/>
+                    </div>
+                </section>
 
-			</div>
+                <br/>
+                <section id="comments">
+                    <div id="disqus_thread"></div>
+                    <script type="text/javascript">
+				        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+				        var disqus_shortname = '<th:block th:text="${@disqusProperties.getShortname()}"/>'; // required: replace example with your forum shortname
 
-		</div>
-	</section>
+				        /* * * DON'T EDIT BELOW THIS LINE * * */
+				        (function() {
+				            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+				            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+				            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+				        })();
+				    </script>
+                    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+                    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+                </section>
+
+
+            </div>
+
+        </div>
+    </section>
 
 </div>

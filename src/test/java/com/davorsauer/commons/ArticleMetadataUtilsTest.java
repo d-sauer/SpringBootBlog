@@ -14,6 +14,8 @@ import java.util.Date;
 import java.util.HashSet;
 
 import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.core.IsCollectionContaining.hasItems;
+import static org.hamcrest.core.StringContains.containsString;
 import static org.junit.Assert.assertThat;
 
 @RunWith(BlockJUnit4ClassRunner.class)

@@ -35,7 +35,7 @@ public class BlogController implements Logger {
     }
 
     @RequestMapping(value = "/blog/{slug}", method = {RequestMethod.GET})
-    public String blog(@PathVariable("slug") String slug, Model model) throws LoadArticleException {
+    public String blog(@PathVariable("slug") String slug, Model model) throws Exception {
         ContentData content = blogService.getArticle(slug);
         model.addAttribute("blog_content", content.getContent());
         if (content.getMetadata() != null ) {
@@ -49,7 +49,7 @@ public class BlogController implements Logger {
     }
 
     @RequestMapping(value = "/preview/{branch}/{slug}", method = {RequestMethod.GET})
-    public String preview(@PathVariable("branch") String branch, @PathVariable("slug") String slug, Model model) throws IOException, LoadArticleException {
+    public String preview(@PathVariable("branch") String branch, @PathVariable("slug") String slug, Model model) throws Exception {
         ContentData content = blogService.getArticle(slug, branch);
         model.addAttribute("blog_content", content.getContent());
         if (content.getMetadata() != null ) {
@@ -63,7 +63,7 @@ public class BlogController implements Logger {
     }
 
     @RequestMapping(value = {"/blog_reload"})
-    public String blogReload() throws IOException, ScanArticlesException {
+    public String blogReload() throws Exception {
         blogService.scan();
 
         return "redirect:/";

@@ -1326,18 +1326,22 @@ section#portfolio_single {
     color: #3dab78;
   }    
   
-  #blogs .posted {
+  #blogs span.posted {
     font-family:Arial, "HelveticaNeue", "Helvetica Neue", Helvetica, sans-serif;
     font-size: 12px;
     color: #AAA;
     padding-left: 10px;
   }
-  
+
+  #blogs img.posted {
+      height: 10px;
+    }
+
   #blogs .tags {
     font-family:Arial, "HelveticaNeue", "Helvetica Neue", Helvetica, sans-serif;
     font-size: 12px;
     color: #AAA;
-    padding: 10px 2px 2px 10px;
+    padding: 10px 2px 2px 2px;
   }
   
   #blogs .tags .tag {

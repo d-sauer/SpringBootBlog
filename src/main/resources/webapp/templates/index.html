@@ -8,8 +8,8 @@
 				    <div class="blog_title">
 						<a th:href="${article.getUrl()}" class="h4" th:text="${article.getMetadata().getTitle()}">Article title</a>
 						<br/>
-						<span class="posted" th:text="${article.getMetadata().getFormatPublishDate()}"><img th:src="@{/resources/images/clock_16.png}"/>YYYY-MM-DD</span>
- 						<span class="tags" th:each="tag : ${article.getMetadata().getTags()}">
+						<img class="posted" th:src="@{/resources/images/clock_16.png}"/><span class="posted" th:text="${article.getMetadata().getFormatPublishDate()}">YYYY-MM-DD</span>
+						<span class="tags" th:each="tag : ${article.getMetadata().getTags()}">
                             <span class="tag" th:text="${tag}">TAG</span>
                          </span>
 				    </div>

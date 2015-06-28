@@ -1,8 +1,16 @@
 package com.davorsauer.commons;
 
 import com.davorsauer.domain.ArticleMetadata;
+import com.davorsauer.domain.ArticleType;
+import com.davorsauer.error.LoadArticleException;
+import com.davorsauer.service.GitHubRepositoryService;
+import com.davorsauer.service.MarkdownService;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.kohsuke.github.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,7 +36,7 @@ public class ContentMetadataUtils {
 
     public static ArticleMetadata readMetadata(InputStream metadata) throws IOException {
         StringBuilder buffer = new StringBuilder();
-        byte [] readBuffer = new byte[1024];
+        byte[] readBuffer = new byte[1024];
         try {
             while (metadata.read(readBuffer) != -1) {
                 buffer.append(new String(readBuffer, "UTF-8"));
@@ -146,6 +154,43 @@ public class ContentMetadataUtils {
             SimpleDateFormat dateFormat = new SimpleDateFormat(format);
             return dateFormat.format(formatDate);
         }
+    }
+
+    public static ArticleMetadata readMetadata(GitHubRepositoryService repository, MarkdownService markdownService, GHContent articleIndex, ArticleType articleType) throws LoadArticleException {
+        ArticleMetadata metadata = new ArticleMetadata();
+
+        //
+        // Created date
+        //
+        try {
+            // TODO Read create date from GitHub for that file
+            metadata.setPublishDate(new Date());
+        } catch (Exception e) {
+            // can't read creating date
+            LOG.error("readMetadata", e);
+        }
+
+
+        //
+        // Title, description
+        //
+        String html = repository.getArticleContent(articleIndex);
+        if (ArticleType.MARKDOWN.equals(articleType)) {
+            html = markdownService.renderMarkdown(html);
+        }
+
+        Document htmlDoc = Jsoup.parse(html);
+        // Get title
+        String title = htmlDoc.body().getElementsByTag("h1").text();
+        if (StringUtils.isEmpty(title))
+            title = "Unknown title";
+        metadata.setTitle(title);
+
+        // Get first paragraph
+        String paragraph = htmlDoc.body().getElementsByTag("p").text();
+        metadata.setDescription(paragraph);
+
+        return metadata;
     }
 
 }

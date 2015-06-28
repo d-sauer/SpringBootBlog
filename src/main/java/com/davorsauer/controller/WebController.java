@@ -2,6 +2,8 @@ package com.davorsauer.controller;
 
 import com.davorsauer.commons.Logger;
 import com.davorsauer.commons.NotifyType;
+import com.davorsauer.config.BlogProperties;
+import com.davorsauer.domain.ContentData;
 import com.davorsauer.dto.ContactReq;
 import com.davorsauer.dto.ContactRes;
 import com.davorsauer.service.BlogService;
@@ -10,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -31,10 +34,12 @@ public class WebController implements Logger {
     @Autowired
     private BlogService blogService;
 
+    @Autowired
+    private BlogProperties properties;
+
 
     @RequestMapping("/")
     public String index(Model model) {
-
         model.addAttribute("articles", blogService.getArticles());
         model.addAttribute("test", "test content " + new Date());
 
@@ -42,13 +47,23 @@ public class WebController implements Logger {
     }
 
     @RequestMapping(value = {"/about"})
-    public String about() {
+    public String about(Model model) throws Exception {
+        String aboutHtml = "Nothing about me..";
+        if (!StringUtils.isEmpty(properties.getAbout())) {
+            aboutHtml = blogService.getHTML(properties.getAbout());
+        }
+        model.addAttribute("about_content", aboutHtml);
 
         return "about";
     }
 
     @RequestMapping(value = {"/portfolio"})
-    public String portfolio() {
+    public String portfolio(Model model) throws Exception {
+        String aboutHtml = "Currently there is no previous projects..";
+        if (!StringUtils.isEmpty(properties.getPortfolio())) {
+            aboutHtml = blogService.getHTML(properties.getPortfolio());
+        }
+        model.addAttribute("portfolio_content", aboutHtml);
 
         return "portfolio";
     }
@@ -59,8 +74,9 @@ public class WebController implements Logger {
         return "contact";
     }
 
-    @RequestMapping(value = { "/contact_send" }, method = RequestMethod.POST)
-    public @ResponseBody
+    @RequestMapping(value = {"/contact_send"}, method = RequestMethod.POST)
+    public
+    @ResponseBody
     ContactRes contactSend(HttpServletRequest request) throws IOException {
         String name = request.getParameter("name");
         String email = request.getParameter("email");
@@ -79,21 +95,18 @@ public class WebController implements Logger {
         if (name == null || name.trim().length() == 0) {
             canSend = false;
             cr.setMessage("Enter name");
-        }
-        else if (email == null || email.trim().length() == 0 || !email.contains("@")) {
+        } else if (email == null || email.trim().length() == 0 || !email.contains("@")) {
             canSend = false;
             cr.setMessage("Enter email");
-        }
-        else if (subject == null || subject.trim().length() == 0) {
+        } else if (subject == null || subject.trim().length() == 0) {
             canSend = false;
             cr.setMessage("Enter subject");
-        }
-        else if (message == null || message.trim().length() == 0) {
+        } else if (message == null || message.trim().length() == 0) {
             canSend = false;
             cr.setMessage("Enter message");
         }
 
-        if (canSend==false) {
+        if (canSend == false) {
             cr.setNotifyType(NotifyType.ALERT);
         } else {
 
@@ -102,7 +115,7 @@ public class WebController implements Logger {
                 msg.append("User header:");
 
                 Enumeration<String> en = request.getHeaderNames();
-                while(en.hasMoreElements()) {
+                while (en.hasMoreElements()) {
                     String key = en.nextElement();
                     msg.append("\n" + key + ": " + request.getHeader(key));
                 }
@@ -114,7 +127,7 @@ public class WebController implements Logger {
                 cr.setStatus(1);
                 cr.setNotifyType(NotifyType.SUCCESS);
                 cr.setMessage("Email was sent!");
-            } catch(Exception e) {
+            } catch (Exception e) {
                 error("Sending email error!", e);
 
                 cr.setNotifyType(NotifyType.FAILURE);

@@ -14,12 +14,9 @@ public class GitHubProperties {
 
     private String password;
 
-    private String oAuthToken;
+    private String oAuth;
 
     private String repository;
-
-    private String path = "";
-
 
     public String getUser() {
         return user;
@@ -37,12 +34,12 @@ public class GitHubProperties {
         this.password = password;
     }
 
-    public String getoAuthToken() {
-        return oAuthToken;
+    public String getoAuth() {
+        return oAuth;
     }
 
-    public void setoAuthToken(String oAuthToken) {
-        this.oAuthToken = oAuthToken;
+    public void setoAuth(String oAuth) {
+        this.oAuth = oAuth;
     }
 
     public String getRepository() {
@@ -51,14 +48,6 @@ public class GitHubProperties {
 
     public void setRepository(String repository) {
         this.repository = repository;
-    }
-
-    public String getPath() {
-        return path;
-    }
-
-    public void setPath(String path) {
-        this.path = path;
     }
 
 }

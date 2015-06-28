@@ -36,7 +36,7 @@
 	  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 	  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 	
-	  ga('create', 'UA-49337776-1', 'davorsauer.com');
+	  ga('create', '<th:block th:text="${@googleAnalyticsProperties.getId()}"/>', '<th:block th:text="${@googleAnalyticsProperties.getDomain()}"/>');
 	  ga('send', 'pageview');
 	
 	</script>

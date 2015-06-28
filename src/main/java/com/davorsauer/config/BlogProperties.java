@@ -1,6 +1,5 @@
 package com.davorsauer.config;
 
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
@@ -9,19 +8,13 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @ConfigurationProperties(prefix = "blog")
-public class BlogProperties implements InitializingBean {
+public class BlogProperties {
 
     private String title = "";
 
-    private static final String RELOAD_URL_DEFAULT = "blog_reload";
-    private String reloadUrl = RELOAD_URL_DEFAULT;
+    private String about;
 
-    private String downloadFolder = "";
-
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        if (reloadUrl == null && reloadUrl.trim().length() == 0) reloadUrl = RELOAD_URL_DEFAULT;
-    }
+    private String portfolio;
 
     public String getTitle() {
         return title;
@@ -31,19 +24,19 @@ public class BlogProperties implements InitializingBean {
         this.title = title;
     }
 
-    public String getReloadUrl() {
-        return reloadUrl;
+    public String getAbout() {
+        return about;
     }
 
-    public void setReloadUrl(String reloadUrl) {
-        this.reloadUrl = reloadUrl;
-    }
-    public String getDownloadFolder() {
-        return downloadFolder;
+    public void setAbout(String about) {
+        this.about = about;
     }
 
-    public void setDownloadFolder(String downloadFolder) {
-        this.downloadFolder = downloadFolder;
+    public String getPortfolio() {
+        return portfolio;
     }
 
+    public void setPortfolio(String portfolio) {
+        this.portfolio = portfolio;
+    }
 }
