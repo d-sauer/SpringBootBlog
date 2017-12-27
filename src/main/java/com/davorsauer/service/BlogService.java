@@ -2,6 +2,7 @@ package com.davorsauer.service;
 
 import com.davorsauer.commons.ContentMetadataUtils;
 import com.davorsauer.commons.Logger;
+import com.davorsauer.config.BlogProperties;
 import com.davorsauer.domain.Article;
 import com.davorsauer.domain.ArticleMetadata;
 import com.davorsauer.domain.ArticleType;
@@ -11,9 +12,14 @@ import com.davorsauer.error.ScanArticlesException;
 import org.kohsuke.github.GHCommit;
 import org.kohsuke.github.GHContent;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import javax.cache.CacheManager;
+import javax.cache.annotation.CacheKey;
+import javax.cache.annotation.CacheResolver;
+import javax.cache.annotation.CacheResult;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.*;
@@ -39,6 +45,7 @@ public class BlogService implements Logger {
 
     private ReentrantLock lock = new ReentrantLock();
 
+    private CacheResolver cacheResolver;
 
     @Autowired
     public BlogService(GitHubRepositoryService repository, MarkdownService markdownService) {
@@ -65,6 +72,7 @@ public class BlogService implements Logger {
         try {
             final Map<String, Article> articles = new HashMap<>();
 
+            debug("Scanning for articles");
             List<GHContent> contents = repository.getRepository().getDirectoryContent("/");
             for (GHContent content : contents) {
                 if (content.isDirectory()) {
@@ -172,7 +180,8 @@ public class BlogService implements Logger {
         return article;
     }
 
-    public ContentData getArticle(String slug) throws Exception {
+    @CacheResult(cacheName = "blog")
+    public ContentData getArticle(@CacheKey String slug) throws Exception {
         return getArticle(slug, null);
     }
 

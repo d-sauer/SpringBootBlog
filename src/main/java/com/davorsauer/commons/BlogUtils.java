@@ -22,14 +22,13 @@ public class BlogUtils {
 
     public static final Function<String, String[]> metaNamings = (customName) -> new String[]{"metadata", customName + ".meta", customName};
 
-    public static final Function<Article, Long> getPublishDate = (contentLocation -> {
+    public static final Function<Article, Long> getPublishDate = contentLocation -> {
         if (contentLocation.getMetadata() != null && contentLocation.getMetadata().getPublishDate() != null) {
             return contentLocation.getMetadata().getPublishDate().getTime();
         } else {
             return 0L;
         }
-    }
-    );
+    };
 
 
     public static final Comparator<Map.Entry<String, Article>> sortByValue = (entry1, entry2) -> {

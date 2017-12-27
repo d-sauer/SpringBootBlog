@@ -9,6 +9,8 @@ import com.davorsauer.dto.ContactRes;
 import com.davorsauer.service.BlogService;
 import com.davorsauer.service.SendMailService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,6 +27,7 @@ import java.util.*;
  * Created by davor on 11/04/15.
  */
 @Controller
+@CacheConfig(cacheNames = { BlogProperties.CACHE_NAME })
 public class WebController implements Logger {
 
     @Lazy
@@ -38,6 +41,7 @@ public class WebController implements Logger {
     private BlogProperties properties;
 
 
+    @Cacheable
     @RequestMapping("/")
     public String index(Model model) {
         model.addAttribute("articles", blogService.getArticles());
@@ -46,6 +50,7 @@ public class WebController implements Logger {
         return "index";
     }
 
+    @Cacheable
     @RequestMapping(value = {"/about"})
     public String about(Model model) throws Exception {
         String aboutHtml = "Nothing about me..";
@@ -57,6 +62,7 @@ public class WebController implements Logger {
         return "about";
     }
 
+    @Cacheable
     @RequestMapping(value = {"/portfolio"})
     public String portfolio(Model model) throws Exception {
         String aboutHtml = "Currently there is no previous projects..";
@@ -75,9 +81,8 @@ public class WebController implements Logger {
     }
 
     @RequestMapping(value = {"/contact_send"}, method = RequestMethod.POST)
-    public
     @ResponseBody
-    ContactRes contactSend(HttpServletRequest request) throws IOException {
+    public ContactRes contactSend(HttpServletRequest request) throws IOException {
         String name = request.getParameter("name");
         String email = request.getParameter("email");
         String subject = request.getParameter("subject");

@@ -3,8 +3,6 @@ package com.davorsauer.controller;
 import com.davorsauer.commons.Logger;
 import com.davorsauer.config.BlogProperties;
 import com.davorsauer.domain.ContentData;
-import com.davorsauer.error.LoadArticleException;
-import com.davorsauer.error.ScanArticlesException;
 import com.davorsauer.service.BlogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -13,7 +11,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import java.io.IOException;
+import javax.cache.annotation.CacheKey;
+import javax.cache.annotation.CacheResult;
 
 /**
  * Created by davor on 13/04/15.
@@ -34,11 +33,12 @@ public class BlogController implements Logger {
         return "redirect:/";
     }
 
+
     @RequestMapping(value = "/blog/{slug}", method = {RequestMethod.GET})
-    public String blog(@PathVariable("slug") String slug, Model model) throws Exception {
+    public String blog(@PathVariable("slug") @CacheKey String slug, Model model) throws Exception {
         ContentData content = blogService.getArticle(slug);
         model.addAttribute("blog_content", content.getContent());
-        if (content.getMetadata() != null ) {
+        if (content.getMetadata() != null) {
             if (content.getMetadata().getTags() != null)
                 model.addAttribute("blog_tags", content.getMetadata().getTags());
             if (content.getMetadata().getPublishDate() != null)
@@ -52,7 +52,7 @@ public class BlogController implements Logger {
     public String preview(@PathVariable("branch") String branch, @PathVariable("slug") String slug, Model model) throws Exception {
         ContentData content = blogService.getArticle(slug, branch);
         model.addAttribute("blog_content", content.getContent());
-        if (content.getMetadata() != null ) {
+        if (content.getMetadata() != null) {
             if (content.getMetadata().getTags() != null)
                 model.addAttribute("blog_tags", content.getMetadata().getTags());
             if (content.getMetadata().getPublishDate() != null)
@@ -64,7 +64,9 @@ public class BlogController implements Logger {
 
     @RequestMapping(value = {"/blog_reload"})
     public String blogReload() throws Exception {
+        info("Start reload..");
         blogService.scan();
+        info("End reload!");
 
         return "redirect:/";
     }

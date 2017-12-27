@@ -10,6 +10,8 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "blog")
 public class BlogProperties {
 
+    public static final String CACHE_NAME = "blog";
+
     private String title = "";
 
     private String about;
